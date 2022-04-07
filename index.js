@@ -8,7 +8,23 @@ const WINNING_COMBINATIONS = [
   [0, 4, 8],
   [2, 4, 6],
 ];
-// console.log(WINNING_COMBINATIONS);
+
+let resultDiv = document.createElement('div')
+let result = document.createElement('H2');
+result.setAttribute('id', 'result')
+document.body.prepend(resultDiv)
+resultDiv.prepend(result)
+result.textContent = `result `
+result.style.textAlign = 'center';
+
+
+let restart = document.createElement('button')
+restart.setAttribute('id', 'restart')
+resultDiv.prepend(restart)
+restart.textContent = `restartas `
+restart.style.alignItems = 'center'
+
+
 let cells = document.querySelectorAll("[data-cell]");
 let sign = true;
 for (let i = 0; i < cells.length; i++) {
@@ -23,9 +39,6 @@ for (let i = 0; i < cells.length; i++) {
     { once: true }
   );
 }
-// function beginGame (event){
-
-// }
 
 function checkWin() {
   for (let i = 0; i < WINNING_COMBINATIONS.length; i++) {
@@ -35,10 +48,13 @@ function checkWin() {
     console.log(cell1.textContent);
 
     if (cell1.textContent == "X" && cell2.textContent == "X" && cell3.textContent == "X") {
-      alert("X laimėjo");
+      result.innerHTML = "IKSAS laimėjo";
     }
-    if (cell1.textContent === "O" && cell2.textContent === "O" && cell3.textContent === "O") {
-      alert("O laimėjo");
+    else if (cell1.textContent === "O" && cell2.textContent === "O" && cell3.textContent === "O") {
+      result.innerHTML = "NULIS laimėjo";
     }
+    else (cell1.textContent !== "O" || cell2.textContent !== "O" || cell3.textContent !== "O") ;{
+    result.innerHTML = "Lygiosios";
+  }
   }
 }
