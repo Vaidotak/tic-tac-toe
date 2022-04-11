@@ -6,55 +6,74 @@ const WINNING_COMBINATIONS = [
   [1, 4, 7],
   [2, 5, 8],
   [0, 4, 8],
-  [2, 4, 6],
+  [2, 4, 6]
 ];
-
-let resultDiv = document.createElement('div')
-let result = document.createElement('H2');
-result.setAttribute('id', 'result')
-document.body.prepend(resultDiv)
-resultDiv.prepend(result)
-result.textContent = `result `
-result.style.textAlign = 'center';
-
-
-let restart = document.createElement('button')
-restart.setAttribute('id', 'restart')
-resultDiv.prepend(restart)
-restart.textContent = `restartas `
-restart.style.alignItems = 'center'
-
-
-let cells = document.querySelectorAll("[data-cell]");
-let sign = true;
+let isFirst = true
+let cells = document.getElementsByClassName('cell')
+let draw = []
+let playerSymbol = 'X'
+let playerX = 0
+let playerO = 0
+document.getElementsByTagName('h1')[0].textContent = playerSymbol
+// einu per visus cell
 for (let i = 0; i < cells.length; i++) {
-  cells[i].addEventListener(
-    "click",
-    function () {
-      this.innerHTML = sign ? "X" : "O";
-      sign = !sign;
-      checkWin();
-
-    },
-    { once: true }
-  );
+  //imu kiekviena cell atskirai ir uzdedu event click
+  cells[i].addEventListener('click',function () {
+    fillInCell(this)
+    document.getElementsByTagName('h1')[0].textContent = playerSymbol
+  })
 }
-
-function checkWin() {
-  for (let i = 0; i < WINNING_COMBINATIONS.length; i++) {
-    const cell1 = cells[WINNING_COMBINATIONS[i][0]];
-    const cell2 = cells[WINNING_COMBINATIONS[i][1]];
-    const cell3 = cells[WINNING_COMBINATIONS[i][2]];
-    console.log(cell1.textContent);
-
-    if (cell1.textContent == "X" && cell2.textContent == "X" && cell3.textContent == "X") {
-      result.innerHTML = "IKSAS laimėjo";
+function fillInCell(cell) {
+  // tikrinu ar tuscia cell ant kurios paspaudziau
+  if(cell.innerHTML.length === 0) {
+    let currentPlayer = isFirst ? 'X' : 'O'
+    playerSymbol = !isFirst ? 'X' : 'O'
+    cell.innerHTML = currentPlayer
+    if (!checkWinner(currentPlayer)) {
+      checkDraw()
     }
-    else if (cell1.textContent === "O" && cell2.textContent === "O" && cell3.textContent === "O") {
-      result.innerHTML = "NULIS laimėjo";
+    isFirst = !isFirst
+  }
+}
+function checkWinner(currentPlayer) {
+  for (let combination of WINNING_COMBINATIONS) {
+    // every funkcija tikrina ar uyra laimetojas
+    let winner = combination.every(function (cellKey) {
+      return cells[cellKey].textContent === currentPlayer
+    })
+    if (winner) {
+      if (currentPlayer === 'X') {
+        playerX++
+        document.getElementById('playerX').textContent = playerX
+      } else {
+        playerO++
+        document.getElementById('playerO').textContent = playerO
+      }
+      reloadPage('my winner is: ' + currentPlayer)
     }
-    else (cell1.textContent !== "O" || cell2.textContent !== "O" || cell3.textContent !== "O") ;{
-    result.innerHTML = "Lygiosios";
   }
+  return false
+}
+function checkDraw() {
+  for (let cell of cells) {
+    draw.push(cell.textContent.length > 0)
   }
+  draw = draw.every(function (currentValue) {
+    return currentValue
+  })
+  if (draw) {
+    reloadPage('Draw')
+  } else {
+    draw = []
+  }
+}
+function reloadPage(message) {
+  setTimeout(function () {
+    alert(message)
+    for (let cell of cells) {
+      cell.textContent = ''
+    }
+    // location.reaload padaro page refresh
+    // location.reload()
+  }, 1)
 }
